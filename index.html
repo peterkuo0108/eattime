@@ -72,8 +72,6 @@
         .page {
             display: none; opacity: 0; transition: opacity 0.3s ease-in-out;
             flex-direction: column; padding: 1rem;
-            /* 移除 min-height，讓 main 元素控制高度 */
-            /* min-height: calc(100vh - 64px); */
         }
         .page.active { display: flex; opacity: 1; }
 
@@ -98,49 +96,17 @@
 
         /* 自訂警告 Modal 樣式 */
         #confirm-delete-modal .modal-content {
-             border-radius: 0.5rem; /* 警告視窗通常是方正的 */
-             max-width: 350px; /* 警告視窗可以小一點 */
-             padding: 1.5rem;
-             text-align: center;
-             transform: none; /* 不從底部彈出 */
-             animation: fadeIn 0.3s ease-out; /* 使用淡入動畫 */
-             margin: auto; /* 垂直置中 */
+             border-radius: 0.5rem; max-width: 350px; padding: 1.5rem;
+             text-align: center; transform: none; animation: fadeIn 0.3s ease-out; margin: auto;
         }
-         #confirm-delete-modal.active {
-             align-items: center; /* 垂直置中 */
-         }
-         #confirm-delete-modal .modal-content h3 {
-             color: #dc2626; /* 紅色警告標題 */
-             dark:color: #f87171;
-             margin-bottom: 1rem;
-         }
-         #confirm-delete-modal .modal-content p {
-             color: #4b5563; /* 灰色文字 */
-             dark:color: #d1d5db;
-             margin-bottom: 1.5rem;
-         }
-         #confirm-delete-modal .modal-content .flex {
-             justify-content: center; /* 按鈕置中 */
-         }
-         #confirm-delete-modal .modal-content button {
-             min-width: 90px; /* 確保按鈕有最小寬度 */
-             justify-content: center;
-         }
+         #confirm-delete-modal.active { align-items: center; }
+         #confirm-delete-modal .modal-content h3 { color: #dc2626; dark:color: #f87171; margin-bottom: 1rem; }
+         #confirm-delete-modal .modal-content p { color: #4b5563; dark:color: #d1d5db; margin-bottom: 1.5rem; }
+         #confirm-delete-modal .modal-content .flex { justify-content: center; }
+         #confirm-delete-modal .modal-content button { min-width: 90px; justify-content: center; }
 
+        #list-page .scrollable-content { flex-grow: 1; overflow-y: auto; }
 
-        /* 列表頁滾動 - 確保列表容器能正確滾動 */
-        #list-page .scrollable-content {
-            flex-grow: 1; /* 讓列表容器填滿可用空間 */
-            overflow-y: auto; /* 內容超出時顯示滾動條 */
-            /* 移除可能影響高度計算的樣式，如果有的話 */
-            /* 例如：min-height, height */
-        }
-
-        /* 底部導覽列 - 使用 sticky 定位 */
-        /* nav 樣式已透過 Tailwind class 'sticky bottom-0 z-10' 處理 */
-        /* nav { height: 64px; flex-shrink: 0; border-top-width: 1px; } */
-
-        /* API 讀取覆蓋層 */
         #api-loading-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.5); display: none;
@@ -155,7 +121,6 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .dark .spinner { border: 4px solid rgba(0, 0, 0, 0.3); border-left-color: #000000; }
-
     </style>
 </head>
 <body class="transition-colors duration-300">
@@ -163,9 +128,9 @@
     <div id="api-loading-overlay"><div class="spinner"></div></div>
 
     <div id="app-container" class="mx-auto bg-gray-100 dark:bg-gray-900 shadow-lg dark:shadow-none">
-
         <main class="flex-grow overflow-y-auto">
-            <div id="list-page" class="page active flex flex-col h-full"> <div class="flex justify-between items-center mb-4 px-2 flex-shrink-0">
+            <div id="list-page" class="page active flex flex-col h-full">
+                <div class="flex justify-between items-center mb-4 px-2 flex-shrink-0">
                     <button onclick="changeDate('prev')" class="text-emerald-500 dark:text-emerald-400 text-2xl p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition">&lt;</button>
                     <h2 id="current-date-display" class="font-semibold text-lg text-gray-800 dark:text-gray-100">今天</h2>
                     <button onclick="changeDate('next')" class="text-emerald-500 dark:text-emerald-400 text-2xl p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition">&gt;</button>
@@ -180,7 +145,8 @@
                     </div>
                 </div>
                 <h3 class="font-semibold mb-2 text-gray-700 dark:text-gray-200 px-2 flex-shrink-0">今日食物</h3>
-                <div id="food-list-container" class="scrollable-content space-y-2 bg-white dark:bg-gray-800 p-4 rounded-lg shadow mx-2 flex-grow mb-4"> <p id="no-food-message" class="text-gray-500 dark:text-gray-400 text-center py-6">今天還沒有紀錄食物喔！</p>
+                <div id="food-list-container" class="scrollable-content space-y-2 bg-white dark:bg-gray-800 p-4 rounded-lg shadow mx-2 flex-grow mb-4">
+                    <p id="no-food-message" class="text-gray-500 dark:text-gray-400 text-center py-6">今天還沒有紀錄食物喔！</p>
                 </div>
             </div>
 
@@ -280,14 +246,16 @@
 
         <div id="nutrition-info-modal" class="modal" onclick="closeModalOnClickOutside(event, 'nutrition-info-modal')">
             <div class="modal-content dark:bg-gray-800">
-                <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">辨識結果</h3> <div id="nutrition-details" class="mb-5 space-y-2 text-gray-700 dark:text-gray-200">
+                <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">辨識結果</h3>
+                <div id="nutrition-details" class="mb-5 space-y-2 text-gray-700 dark:text-gray-200">
                     <p><strong>食物名稱:</strong> <span id="info-food-name" class="font-medium">---</span></p>
                     <p><strong>熱量 (估計):</strong> <span id="info-calories" class="font-medium">---</span> kcal</p>
                     <p><strong>蛋白質 (估計):</strong> <span id="info-protein" class="font-medium">---</span> g</p>
                     <p><strong>碳水化合物 (估計):</strong> <span id="info-carbs" class="font-medium">---</span> g</p>
                     <p><strong>脂肪 (估計):</strong> <span id="info-fat" class="font-medium">---</span> g</p>
                     <p id="ai-remark" class="text-xs text-gray-500 dark:text-gray-400 mt-3"></p>
-                    <p id="source-remark" class="text-xs text-blue-600 dark:text-blue-400 mt-1"></p> </div>
+                    <p id="source-remark" class="text-xs text-blue-600 dark:text-blue-400 mt-1"></p>
+                </div>
                 <div class="flex justify-end space-x-3">
                     <button onclick="closeModal('nutrition-info-modal')" class="px-5 py-2 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-100 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 transition">不加入</button>
                     <button onclick="addFoodToList()" class="px-5 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600 transition">加入紀錄</button>
@@ -299,7 +267,7 @@
              <div class="modal-content dark:bg-gray-800 text-center">
                 <i class="fas fa-utensils text-4xl text-emerald-500 dark:text-emerald-400 mb-4"></i>
                 <h3 class="text-xl font-bold mb-2 text-gray-900 dark:text-gray-100">食刻</h3>
-                <p class="text-sm text-gray-600 dark:text-gray-300 mb-1"><span id="app-version">1.0.0</span></p>
+                <p class="text-sm text-gray-600 dark:text-gray-300 mb-1"><span id="app-version">1.0.1</span></p>
                 <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">由 郭沛勳 開發</p>
                 <p class="text-xs text-gray-500 dark:text-gray-400 mb-6">© 2025 食刻 保留所有權利</p>
                 <button onclick="closeModal('about-modal')" class="w-full px-4 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600 transition">確定</button>
@@ -319,7 +287,8 @@
         <div id="confirm-delete-modal" class="modal" onclick="closeModalOnClickOutside(event, 'confirm-delete-modal')">
              <div class="modal-content dark:bg-gray-800">
                 <h3 class="text-lg font-semibold mb-4">警告</h3>
-                <p class="mb-5">確定要刪除所有食物紀錄嗎？<br>此操作無法復原。<br></p> <div class="flex justify-center space-x-4">
+                <p class="mb-5">確定要刪除所有食物紀錄嗎？<br>此操作無法復原。<br><strong class='text-yellow-600 dark:text-yellow-400'></strong></p>
+                <div class="flex justify-center space-x-4">
                     <button onclick="closeModal('confirm-delete-modal')" class="px-5 py-2 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-100 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 transition">取消</button>
                     <button onclick="deleteAllData()" class="px-5 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition dark:bg-red-700 dark:hover:bg-red-800">確定刪除</button>
                 </div>
@@ -346,42 +315,79 @@
         const currentDateDisplay = document.getElementById('current-date-display');
 
         // --- 狀態變數 ---
-        let currentFoodData = null; // 用於暫存待加入列表的食物資料
-        let foodDatabase = []; // 儲存使用者記錄的食物列表
-        let aiFoodCache = {}; // 新增：儲存 AI 回應的快取 (key: userInput, value: aiResponseData)
+        let currentFoodData = null;
+        let foodDatabase = []; // 記憶體中的食物紀錄陣列
+        let aiFoodCache = {};  // 記憶體中的 AI 快取物件
         let currentDisplayDate = new Date();
-        let selectedImageFile = null; // 儲存選取的圖片檔案
+        let selectedImageFile = null;
+        let db; // IndexedDB 資料庫實例
 
-        // --- 本地儲存 Key ---
-        const FOOD_DB_KEY = 'foodDatabase_eatTimeApp';
-        const AI_CACHE_KEY = 'aiFoodCache_eatTimeApp'; // 新增 AI 快取的 Key
+        // --- IndexedDB 設定 ---
+        const DB_NAME = 'EatTimeAppDB';
+        const DB_VERSION = 1;
+        const FOODLOG_STORE_NAME = 'foodLog'; // 食物紀錄 object store
+        const AICACHE_STORE_NAME = 'aiCache'; // AI 快取 object store
 
         // --- Google AI (Gemini) API 設定 ---
-        // !! 安全警告：將 API 金鑰直接寫在前端程式碼中存在風險 !!
-        // !! 在實際部署時，強烈建議將 API 呼叫移至後端伺服器，以保護您的金鑰 !!
-        const GEMINI_API_KEY = "AIzaSyDBhpeoBYFjp4BSwd05m-VcwaUHX45Xb9Y"; // 請替換成您的有效金鑰
+        const GEMINI_API_KEY = "AIzaSyDBhpeoBYFjp4BSwd05m-VcwaUHX45Xb9Y";
         const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-
-        // 可接受的圖片 MIME 類型列表
         const ACCEPTED_IMAGE_TYPES = [
             'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp', 'image/tiff', 'image/heic', 'image/heif'
         ];
 
+        // --- 初始化 IndexedDB ---
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+                request.onupgradeneeded = (event) => {
+                    const dbInstance = event.target.result;
+                    // 建立 foodLog object store
+                    if (!dbInstance.objectStoreNames.contains(FOODLOG_STORE_NAME)) {
+                        dbInstance.createObjectStore(FOODLOG_STORE_NAME, { keyPath: 'id' });
+                        console.log(`${FOODLOG_STORE_NAME} object store created`);
+                    }
+                    // 建立 aiCache object store
+                    if (!dbInstance.objectStoreNames.contains(AICACHE_STORE_NAME)) {
+                        // 使用 userInputKey (小寫食物名稱) 作為 keyPath
+                        dbInstance.createObjectStore(AICACHE_STORE_NAME, { keyPath: 'userInputKey' });
+                        console.log(`${AICACHE_STORE_NAME} object store created`);
+                    }
+                };
+
+                request.onsuccess = (event) => {
+                    db = event.target.result;
+                    console.log("資料庫初始化成功");
+                    resolve(db);
+                };
+
+                request.onerror = (event) => {
+                    console.error("資料庫初始化失敗:", event.target.error);
+                    reject(event.target.error);
+                };
+            });
+        }
 
         // --- 初始化 ---
-        window.onload = () => {
+        window.onload = async () => {
             loadDarkModePreference();
-            loadFoodData(); // 載入食物紀錄
-            loadAiCache(); // 新增：載入 AI 快取
-            showPage('list-page'); // 直接顯示列表頁
-            renderFoodList();
+            try {
+                await initDB(); // 等待資料庫初始化完成
+                await loadFoodDataFromDB(); // 從 DB 載入食物紀錄
+                await loadAiCacheFromDB();  // 從 DB 載入 AI 快取
+            } catch (error) {
+                console.error("應用程式初始化期間載入資料失敗:", error);
+                showAlert('初始化錯誤', '無法載入應用程式資料，部分功能可能無法正常運作。');
+            }
+            showPage('list-page');
+            renderFoodList(); // 初始渲染 (可能為空)
             updateDateDisplay();
             imageUploadInput.addEventListener('change', handleImageSelected);
         };
 
         // --- 深色模式 ---
         function loadDarkModePreference() {
-            const darkModeStored = localStorage.getItem('darkMode');
+            const darkModeStored = localStorage.getItem('darkMode'); // 深色模式偏好仍可使用 localStorage
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             const toggle = darkModeToggle.querySelector('span:last-child');
             if (darkModeStored === 'true' || (darkModeStored === null && prefersDark)) {
@@ -480,7 +486,6 @@
         }
          function showConfirmDeleteModal() { showModal('confirm-delete-modal'); }
 
-
         // --- 連結處理 ---
         function openSponsor() { window.open('http://bit.ly/eattimepay', '_blank'); }
         function openFeedback() { window.open('https://lin.ee/goxtzvb', '_blank'); }
@@ -511,42 +516,40 @@
         }
 
         async function performAiRecognition(type) {
+            if (!db) { showAlert('資料庫錯誤', '資料庫尚未準備好，請稍後再試。'); return; }
             if (!checkOnline()) return;
 
             let requestBody;
             let promptText;
-            let userInputKey = ''; // 用於快取的 Key
+            let originalUserInput = ''; // 用於快取的 Key (使用者原始輸入)
 
             if (type === 'text') {
-                // --- 文字辨識 ---
                 const foodNameInput = document.getElementById('food-name-input');
-                const foodName = foodNameInput.value.trim();
-                if (!foodName) { showAlert('輸入錯誤', '請輸入食物名稱。'); return; }
+                originalUserInput = foodNameInput.value.trim();
+                if (!originalUserInput) { showAlert('輸入錯誤', '請輸入食物名稱。'); return; }
 
-                userInputKey = foodName.toLowerCase(); // 使用小寫作為快取 Key，增加命中率
+                const userInputKey = originalUserInput.toLowerCase(); // 用小寫作為快取 Key
 
-                // 新增：檢查快取
+                // 檢查快取 (從記憶體中的 aiFoodCache)
                 if (aiFoodCache[userInputKey]) {
                     console.log(`從快取命中: ${userInputKey}`);
                     const cachedData = aiFoodCache[userInputKey];
                     currentFoodData = {
-                        name: cachedData.food_name || foodName, // 優先使用 AI 回傳的名稱
+                        name: cachedData.food_name || originalUserInput,
                         calories: cachedData.calories || 0,
                         protein: (cachedData.protein || 0).toFixed(1),
                         carbs: (cachedData.carbs || 0).toFixed(1),
                         fat: (cachedData.fat || 0).toFixed(1),
-                        remark: cachedData.remark || "Gemini AI 估計值，僅供參考。",
-                        source: 'cache' // 標記來源為快取
+                        remark: cachedData.remark || "AI 估計值，僅供參考。",
+                        source: 'cache'
                     };
                     closeModal('text-input-modal');
                     showNutritionInfo(currentFoodData);
-                    return; // 快取命中，結束函式
+                    return;
                 }
 
-                // 快取未命中，繼續執行 API 呼叫
                 closeModal('text-input-modal');
                 showApiLoading(true);
-
                 promptText = `請分析以下台灣常見食物的名稱，並估計其一份的營養資訊（熱量 kcal, 蛋白質 g, 碳水化合物 g, 脂肪 g）。請**僅**回傳一個 JSON 物件，不要包含任何前後說明文字或 markdown 格式標籤。JSON 格式如下：
 {
   "food_name": "估計的食物名稱或與輸入相似的名稱",
@@ -556,30 +559,23 @@
   "fat": 數值,
   "remark": "任何額外備註或說明，例如份量假設或估計的信心度"
 }
-
-食物名稱： "${foodName}"`;
-
+食物名稱： "${originalUserInput}"`;
                 requestBody = JSON.stringify({
                     "contents": [{ "parts": [{ "text": promptText }] }],
                     "generationConfig": { "temperature": 0.5, "responseMimeType": "application/json" }
                 });
 
             } else if (type === 'image') {
-                // --- 照片辨識 (不使用快取) ---
                 if (!selectedImageFile || !(selectedImageFile instanceof Blob)) {
-                    showAlert('圖片錯誤', '無法取得有效的圖片檔案。請重新選擇。');
-                    return;
+                    showAlert('圖片錯誤', '無法取得有效的圖片檔案。請重新選擇。'); return;
                 }
                 const fileToProcess = selectedImageFile;
                 const mimeType = fileToProcess.type;
                 if (!ACCEPTED_IMAGE_TYPES.includes(mimeType.toLowerCase())) {
-                    showAlert('檔案格式不支援', `請選擇以下格式的圖片：${ACCEPTED_IMAGE_TYPES.join(', ')}`);
-                    return;
+                    showAlert('檔案格式不支援', `請選擇以下格式的圖片：${ACCEPTED_IMAGE_TYPES.join(', ')}`); return;
                 }
-
                 closeModal('image-input-modal');
                 showApiLoading(true);
-
                 try {
                     const base64Image = await fileToBase64(fileToProcess);
                     promptText = `請分析這張圖片中的食物，並估計其一份的營養資訊（熱量 kcal, 蛋白質 g, 碳水化合物 g, 脂肪 g）。請**僅**回傳一個 JSON 物件，不要包含任何前後說明文字或 markdown 格式標籤。JSON 格式如下：
@@ -591,9 +587,7 @@
   "fat": 數值,
   "remark": "任何額外備註或說明，例如份量假設或估計的信心度"
 }
-
 請盡量辨識出食物名稱，並提供合理的營養估計。`;
-
                     requestBody = JSON.stringify({
                         "contents": [{ "parts": [ { "text": promptText }, { "inlineData": { "mimeType": mimeType, "data": base64Image } } ] }],
                         "generationConfig": { "temperature": 0.4, "responseMimeType": "application/json" }
@@ -603,67 +597,50 @@
                     showAlert('圖片處理錯誤', `無法讀取或處理圖片檔案。詳細: ${error instanceof Error ? error.message : String(error)}`);
                     return;
                 }
-            } else {
-                console.error("未知辨識類型:", type);
-                return;
-            }
+            } else { console.error("未知辨識類型:", type); return; }
 
-            // --- 呼叫 Gemini API ---
             try {
                 const response = await fetch(GEMINI_API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: requestBody
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: requestBody
                 });
-
                 showApiLoading(false);
-
                 if (!response.ok) {
                     const errorData = await response.json().catch(() => ({}));
                     showAlert('API 錯誤', `無法從 Gemini AI 獲取回應。狀態碼: ${response.status}. ${errorData.error?.message || '請檢查 API 金鑰或網路連線。'}`);
                     return;
                 }
-
                 const data = await response.json();
-
-                if (data.candidates && data.candidates.length > 0 &&
-                    data.candidates[0].content && data.candidates[0].content.parts &&
-                    data.candidates[0].content.parts.length > 0) {
-
+                if (data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts.length > 0) {
                     const messageContent = data.candidates[0].content.parts[0].text;
-
                     try {
                         let jsonString = messageContent.trim();
                         if (jsonString.startsWith("```json")) jsonString = jsonString.substring(7, jsonString.length - 3).trim();
                         else if (jsonString.startsWith("```")) jsonString = jsonString.substring(3, jsonString.length - 3).trim();
-
                         const nutritionData = JSON.parse(jsonString);
-
                         if (nutritionData && typeof nutritionData.calories === 'number') {
                              currentFoodData = {
-                                name: nutritionData.food_name || (type === 'image' ? '圖片辨識食物' : (userInputKey || '未知食物')), // 優先用 AI 名稱，其次用使用者輸入
+                                name: nutritionData.food_name || (type === 'image' ? '圖片辨識食物' : originalUserInput),
                                 calories: nutritionData.calories || 0,
                                 protein: (nutritionData.protein || 0).toFixed(1),
                                 carbs: (nutritionData.carbs || 0).toFixed(1),
                                 fat: (nutritionData.fat || 0).toFixed(1),
                                 remark: nutritionData.remark || "Gemini AI 估計值，僅供參考。",
-                                source: 'ai' // 標記來源為 AI
+                                source: 'ai'
                             };
-
-                            // 新增：如果是文字輸入且成功，則存入快取
-                            if (type === 'text' && userInputKey) {
-                                aiFoodCache[userInputKey] = { // 儲存原始 AI 回應的資料結構
+                            if (type === 'text' && originalUserInput) {
+                                const cacheEntry = {
+                                    userInputKey: originalUserInput.toLowerCase(), // Key for DB
+                                    originalUserInput: originalUserInput, // Store original for potential display
                                     food_name: nutritionData.food_name,
                                     calories: nutritionData.calories,
                                     protein: nutritionData.protein,
                                     carbs: nutritionData.carbs,
                                     fat: nutritionData.fat,
-                                    remark: nutritionData.remark
+                                    remark: nutritionData.remark,
+                                    timestamp: Date.now() // 可選：快取時間戳
                                 };
-                                saveAiCache(); // 保存快取到 localStorage
-                                console.log(`已將 ${userInputKey} 存入快取`);
+                                await saveAiCacheToDB(cacheEntry); // 存入 DB 和記憶體
                             }
-
                             showNutritionInfo(currentFoodData);
                         } else { throw new Error("回傳的 JSON 格式不符預期。"); }
                     } catch (parseError) {
@@ -671,9 +648,7 @@
                     }
                 } else if (data.promptFeedback && data.promptFeedback.blockReason) {
                      showAlert('內容錯誤', `請求因 ${data.promptFeedback.blockReason} 被封鎖。請嘗試不同的輸入。`);
-                } else {
-                    showAlert('API 回應錯誤', 'Gemini API 回應格式不正確。');
-                }
+                } else { showAlert('API 回應錯誤', 'Gemini API 回應格式不正確。'); }
             } catch (error) {
                 showApiLoading(false);
                 showAlert('連線錯誤', `無法連接至 Gemini API。請檢查您的網路連線。 ${error.message}`);
@@ -681,41 +656,24 @@
         }
 
         // --- 圖片處理 ---
-        function triggerImageUpload(method) {
-             imageUploadInput.click();
-             console.log(`Triggered image selection (method: ${method})`);
-        }
-
+        function triggerImageUpload(method) { imageUploadInput.click(); }
         function handleImageSelected(event) {
              const file = event.target.files[0];
-             if (!file || !(file instanceof Blob)) {
-                 showAlert('檔案錯誤', '請選擇有效的圖片檔案。');
-                 resetImageInput(); return;
-             }
-             if (!ACCEPTED_IMAGE_TYPES.includes(file.type.toLowerCase())) {
-                 showAlert('檔案格式不支援', `請選擇以下格式的圖片：${ACCEPTED_IMAGE_TYPES.join(', ')}`);
-                 resetImageInput(); return;
-             }
+             if (!file || !(file instanceof Blob)) { showAlert('檔案錯誤', '請選擇有效的圖片檔案。'); resetImageInput(); return; }
+             if (!ACCEPTED_IMAGE_TYPES.includes(file.type.toLowerCase())) { showAlert('檔案格式不支援', `請選擇以下格式的圖片：${ACCEPTED_IMAGE_TYPES.join(', ')}`); resetImageInput(); return; }
              selectedImageFile = file;
              imageConfirmButton.disabled = false;
              imageConfirmButton.classList.remove('opacity-50', 'cursor-not-allowed');
              const reader = new FileReader();
-             reader.onload = function(e) {
-                 imagePreview.src = e.target.result;
-                 imagePreview.classList.remove('hidden');
-             }
+             reader.onload = (e) => { imagePreview.src = e.target.result; imagePreview.classList.remove('hidden'); }
              reader.onerror = () => { showAlert('圖片預覽失敗', '無法讀取圖片檔案以供預覽。'); resetImageInput(); };
              reader.onabort = () => { showAlert('圖片預覽已取消', '檔案讀取已取消。'); resetImageInput(); };
              reader.readAsDataURL(file);
         }
-
         function resetImageInput() {
-            imageUploadInput.value = '';
-            selectedImageFile = null;
-            imageConfirmButton.disabled = true;
-            imageConfirmButton.classList.add('opacity-50', 'cursor-not-allowed');
-            imagePreview.classList.add('hidden');
-            imagePreview.src = '#';
+            imageUploadInput.value = ''; selectedImageFile = null;
+            imageConfirmButton.disabled = true; imageConfirmButton.classList.add('opacity-50', 'cursor-not-allowed');
+            imagePreview.classList.add('hidden'); imagePreview.src = '#';
         }
 
         // --- 顯示營養資訊 ---
@@ -726,17 +684,10 @@
             document.getElementById('info-carbs').textContent = data.carbs;
             document.getElementById('info-fat').textContent = data.fat;
             document.getElementById('ai-remark').textContent = data.remark || '';
-            // 新增：顯示資料來源
             const sourceRemarkEl = document.getElementById('source-remark');
-            if (data.source === 'cache') {
-                sourceRemarkEl.textContent = "(來源: AI 快速辨識)";
-                sourceRemarkEl.style.display = 'block';
-            } else if (data.source === 'ai') {
-                sourceRemarkEl.textContent = "(來源: AI 即時辨識)";
-                 sourceRemarkEl.style.display = 'block';
-            } else {
-                sourceRemarkEl.style.display = 'none'; // 手動輸入或其他情況不顯示
-            }
+            if (data.source === 'cache') { sourceRemarkEl.textContent = "(來源: AI 光速辨識)"; sourceRemarkEl.style.display = 'block'; }
+            else if (data.source === 'ai') { sourceRemarkEl.textContent = "(來源: AI 即時辨識)"; sourceRemarkEl.style.display = 'block'; }
+            else { sourceRemarkEl.style.display = 'none'; }
             showModal('nutrition-info-modal');
         }
 
@@ -745,7 +696,7 @@
             document.getElementById('manual-food-name').value = ''; document.getElementById('manual-calories').value = '';
             document.getElementById('manual-protein').value = ''; document.getElementById('manual-carbs').value = ''; document.getElementById('manual-fat').value = '';
         }
-        function addManualFood() {
+        async function addManualFood() {
             const name = document.getElementById('manual-food-name').value.trim();
             const calories = parseFloat(document.getElementById('manual-calories').value) || 0;
             const protein = parseFloat(document.getElementById('manual-protein').value) || 0;
@@ -753,28 +704,135 @@
             const fat = parseFloat(document.getElementById('manual-fat').value) || 0;
             if (!name) { showAlert('輸入錯誤', '請輸入食物名稱。'); return; }
             if (calories <= 0 && protein <= 0 && carbs <= 0 && fat <= 0) { showAlert('輸入錯誤', '請至少輸入一項有效的營養數值。'); return; }
-            // 手動輸入不標記 source
             currentFoodData = { name: name, calories: calories, protein: protein.toFixed(1), carbs: carbs.toFixed(1), fat: fat.toFixed(1), remark: "手動輸入" };
-            addFoodToList(); closeModal('manual-input-modal');
+            await addFoodToList(); // 改為 await
+            closeModal('manual-input-modal');
         }
 
-        // --- 食物列表管理 ---
-        function addFoodToList() {
+        // --- IndexedDB 食物紀錄操作 ---
+        async function saveFoodItemToDB(foodItem) {
+            if (!db) { console.error("DB not initialized"); return Promise.reject("DB not initialized"); }
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([FOODLOG_STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(FOODLOG_STORE_NAME);
+                const request = store.put(foodItem); // put 會新增或更新
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = (event) => reject(event.target.error);
+            });
+        }
+
+        async function loadFoodDataFromDB() {
+            if (!db) { console.error("DB not initialized"); foodDatabase = []; return; }
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([FOODLOG_STORE_NAME], 'readonly');
+                const store = transaction.objectStore(FOODLOG_STORE_NAME);
+                const request = store.getAll();
+                request.onsuccess = () => {
+                    foodDatabase = request.result.map(item => ({
+                        ...item,
+                        id: item.id || Date.now() + Math.random(), // 確保有 ID
+                        timestamp: item.timestamp || new Date(item.id || Date.now()).toISOString() // 確保有時間戳
+                    }));
+                    console.log("食物紀錄從 DB 載入成功", foodDatabase.length, "筆");
+                    resolve(foodDatabase);
+                };
+                request.onerror = (event) => {
+                    console.error("從 DB 載入食物紀錄失敗:", event.target.error);
+                    foodDatabase = []; // 錯誤時清空記憶體中的資料
+                    reject(event.target.error);
+                };
+            });
+        }
+
+        async function deleteFoodItemFromDB(id) {
+            if (!db) { console.error("DB not initialized"); return Promise.reject("DB not initialized"); }
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([FOODLOG_STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(FOODLOG_STORE_NAME);
+                const request = store.delete(id);
+                request.onsuccess = () => resolve();
+                request.onerror = (event) => reject(event.target.error);
+            });
+        }
+
+        async function clearFoodLogFromDB() {
+            if (!db) { console.error("DB not initialized"); return Promise.reject("DB not initialized"); }
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([FOODLOG_STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(FOODLOG_STORE_NAME);
+                const request = store.clear();
+                request.onsuccess = () => resolve();
+                request.onerror = (event) => reject(event.target.error);
+            });
+        }
+
+        // --- IndexedDB AI 快取操作 ---
+        async function saveAiCacheToDB(cacheEntry) {
+            if (!db) { console.error("DB not initialized"); return Promise.reject("DB not initialized"); }
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([AICACHE_STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(AICACHE_STORE_NAME);
+                const request = store.put(cacheEntry); // put 會新增或更新
+                request.onsuccess = () => {
+                    aiFoodCache[cacheEntry.userInputKey] = cacheEntry; // 同步更新記憶體快取
+                    console.log(`AI 快取 ${cacheEntry.userInputKey} 已存入 DB`);
+                    resolve();
+                };
+                request.onerror = (event) => {
+                    console.error(`儲存 AI 快取 ${cacheEntry.userInputKey} 至 DB 失敗:`, event.target.error);
+                    reject(event.target.error);
+                };
+            });
+        }
+
+        async function loadAiCacheFromDB() {
+            if (!db) { console.error("DB not initialized"); aiFoodCache = {}; return; }
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([AICACHE_STORE_NAME], 'readonly');
+                const store = transaction.objectStore(AICACHE_STORE_NAME);
+                const request = store.getAll();
+                request.onsuccess = () => {
+                    const caches = request.result;
+                    aiFoodCache = {}; // 清空記憶體快取再載入
+                    caches.forEach(cache => {
+                        aiFoodCache[cache.userInputKey] = cache;
+                    });
+                    console.log("AI 快取從 DB 載入成功", Object.keys(aiFoodCache).length, "筆");
+                    resolve(aiFoodCache);
+                };
+                request.onerror = (event) => {
+                    console.error("從 DB 載入 AI 快取失敗:", event.target.error);
+                    aiFoodCache = {}; // 錯誤時清空
+                    reject(event.target.error);
+                };
+            });
+        }
+
+
+        // --- 食物列表管理 (使用 IndexedDB) ---
+        async function addFoodToList() {
             if (currentFoodData) {
                 const newFoodItem = {
-                    ...currentFoodData, // 包含 name, calories, protein, carbs, fat, remark, 可能有 source
-                    id: Date.now(),
+                    ...currentFoodData,
+                    id: currentFoodData.id || Date.now(), // 確保有 id
                     timestamp: currentDisplayDate.toISOString()
                 };
-                // 從 currentFoodData 中移除 source 屬性，因為 foodDatabase 不需要儲存它
-                delete newFoodItem.source;
+                delete newFoodItem.source; // foodLog 不需要 source
 
-                foodDatabase.push(newFoodItem);
-                saveFoodData();
-                renderFoodList();
-                closeModal('nutrition-info-modal');
-                currentFoodData = null;
-                showPage('list-page');
+                try {
+                
+                    await saveFoodItemToDB(newFoodItem);
+                    // 成功存入 DB 後才更新記憶體和 UI
+                    foodDatabase.push(newFoodItem); // 更新記憶體
+                    foodDatabase.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // 可選排序
+                    renderFoodList();
+                    closeModal('nutrition-info-modal');
+                    currentFoodData = null;
+                    showPage('list-page');
+                } catch (error) {
+                    console.error("新增食物至 DB 失敗:", error);
+                    showAlert('儲存失敗', '無法將食物紀錄儲存至資料庫。');
+                }
             }
         }
 
@@ -791,6 +849,9 @@
                 noFoodMessage.style.display = 'block';
             } else {
                 noFoodMessage.style.display = 'none';
+                // 確保 itemsToShow 依照 timestamp 降冪排序 (最新的在前面)
+                itemsToShow.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+
                 itemsToShow.forEach(food => {
                     const foodElement = document.createElement('div');
                     foodElement.className = 'flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-sm';
@@ -824,10 +885,16 @@
             document.querySelector('#list-page .flex.justify-around.items-center.text-center div:nth-child(4) p:first-child').textContent = totalFat.toFixed(1) + 'g';
         }
 
-        function removeFoodItem(id) {
-             foodDatabase = foodDatabase.filter(item => item.id !== id);
-             saveFoodData();
-             renderFoodList();
+        async function removeFoodItem(id) {
+            try {
+                await deleteFoodItemFromDB(id);
+                // 成功從 DB 刪除後才更新記憶體和 UI
+                foodDatabase = foodDatabase.filter(item => item.id !== id);
+                renderFoodList();
+            } catch (error) {
+                console.error(`從 DB 刪除食物 ${id} 失敗:`, error);
+                showAlert('刪除失敗', '無法從資料庫刪除食物紀錄。');
+            }
         }
 
         // --- 日期處理 ---
@@ -855,77 +922,20 @@
             updateDateDisplay();
         }
 
-        // --- 本地儲存 (localStorage) ---
-        // 儲存食物紀錄
-        function saveFoodData() {
+        // --- 刪除所有資料 (僅食物紀錄) ---
+        async function deleteAllData() {
             try {
-                localStorage.setItem(FOOD_DB_KEY, JSON.stringify(foodDatabase));
-                console.log("食物紀錄已儲存");
-            } catch (e) {
-                console.error("儲存食物紀錄失敗:", e);
-                showAlert('儲存失敗', '無法儲存食物紀錄，可能是空間已滿。');
-            }
-        }
-        // 載入食物紀錄
-        function loadFoodData() {
-            const storedData = localStorage.getItem(FOOD_DB_KEY);
-            if (storedData) {
-                try {
-                    foodDatabase = JSON.parse(storedData);
-                    foodDatabase = foodDatabase.map(item => ({
-                        ...item,
-                        id: item.id || Date.now() + Math.random(),
-                        timestamp: item.timestamp || new Date().toISOString()
-                    }));
-                    console.log("食物紀錄載入成功");
-                } catch (e) {
-                    console.error("載入食物紀錄失敗:", e);
-                    foodDatabase = [];
-                    localStorage.removeItem(FOOD_DB_KEY);
-                }
-            } else {
+                await clearFoodLogFromDB();
+                // 成功從 DB 清除後才更新記憶體和 UI
                 foodDatabase = [];
-                console.log("無食物紀錄");
+                renderFoodList();
+                closeModal('confirm-delete-modal');
+                showAlert('操作完成', '所有食物紀錄已被刪除');
+            } catch (error) {
+                console.error("清除食物紀錄從 DB 失敗:", error);
+                showAlert('刪除失敗', '無法從資料庫清除所有食物紀錄。');
             }
         }
-        // 新增：儲存 AI 快取
-        function saveAiCache() {
-            try {
-                localStorage.setItem(AI_CACHE_KEY, JSON.stringify(aiFoodCache));
-                console.log("AI 快取已儲存");
-            } catch (e) {
-                console.error("儲存 AI 快取失敗:", e);
-                // 快取儲存失敗通常不需提示使用者
-            }
-        }
-        // 新增：載入 AI 快取
-        function loadAiCache() {
-            const storedCache = localStorage.getItem(AI_CACHE_KEY);
-            if (storedCache) {
-                try {
-                    aiFoodCache = JSON.parse(storedCache);
-                    console.log("AI 快取載入成功");
-                } catch (e) {
-                    console.error("載入 AI 快取失敗:", e);
-                    aiFoodCache = {};
-                    localStorage.removeItem(AI_CACHE_KEY); // 清除損壞的快取
-                }
-            } else {
-                aiFoodCache = {};
-                console.log("無 AI 快取");
-            }
-        }
-
-        // 刪除所有資料 (僅刪除食物紀錄，保留 AI 快取)
-        function deleteAllData() {
-            foodDatabase = [];
-            localStorage.removeItem(FOOD_DB_KEY); // 只移除食物紀錄
-            renderFoodList();
-            closeModal('confirm-delete-modal');
-            showAlert('刪除成功', '所有食物紀錄已被刪除。'); // 更新提示
-        }
-
     </script>
-
 </body>
 </html>
